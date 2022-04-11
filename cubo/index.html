@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mi TFG</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+   <link rel="shortcut icon" href="../img/portada2.png" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <meta name="description" content="Sergio Álvarez Alcedo. Programador e Ingeniero de la energía.">
+  <meta name="author" content="Sergio Alvarez" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" media="screen" href="../css/style.css">
+</head>
+<body>
+	<div id="menu"></div>
+	<div class="inicio" style="z-index: 0;"><div class="tituloinicio">Cubo</div></div>
+	
+	<div class="contenedor-checkboxes">
+		<div class="rangos" style="display: block; margin-top: 0;">
+	  		<p>Grado del sol(º): </p><span id="gradosol"> 0</span>
+	  		<input type="range" step="0.1" min="0" max="76.74" value="0" id="theta" class="slider horaslider">
+		</div>
+	</div>
+	<div class="elvideo">
+		<video width="320" height="240" controls>
+		  <source src="../img/ejemplo.mp4" type="video/mp4">
+		  Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="puntopartidacubo">
+		<div class="cero">
+			<div class="triangulito"></div>
+			<div class="fija">
+				<div class="dotted dotted-fija"></div>
+				<div class="tapa" id="tapa">
+					<div class="esconde"></div>
+				</div>
+				<div class="mueveabajo" id="mueveabajo"></div>
+				<div class="fijaabajo"></div>
+			</div>
+			<div class="movil" id="movil">
+			<div class="dotted dotted-movil"></div>
+			<div class="half-circle">
+				<div class="tapando"></div>
+			</div>
+				<div class="muevearriba" id="muevearriba"></div>
+				<div class="fijaarriba"></div>
+			</div>
+		</div>
+	</div>
+<div id="footer"></div>
+</body>
+<script type="text/javascript">
+	$("#footer").load("../footer.html");
+	$("#menu").load("../menu.html");
+		var thetaa = document.getElementById("theta");
+		var theta_max=76.74;
+		Inclinacionmax=theta_max+(270-theta_max)/2-90;
+		L_cubomax=42/Math.sin((Inclinacionmax-theta_max)*(Math.PI/180));
+		despmax=42*Math.tan((theta_max)*Math.PI/180);
+		//alert(L_cubomax);
+		thetaa.oninput = function() {
+			document.getElementById("gradosol").innerHTML=this.value;
+			giro=270.0+parseFloat(this.value);
+			theta=parseFloat(this.value);
+			Inclinacion=theta+(270-theta)/2-90;
+			nuevoTop=42/Math.cos((theta)*Math.PI/180);
+			L_cubo=42/Math.sin((Inclinacion-theta)*Math.PI/180);
+			desp=42*Math.tan((theta)*Math.PI/180);
+
+			document.getElementById("movil").style.transform ="rotate(" + giro + "deg)";
+			document.getElementById("tapa").style.top =-nuevoTop+ "px";
+			document.getElementById("muevearriba").style.bottom =desp+ "px";
+			document.getElementById("mueveabajo").style.top =desp+ "px";
+			document.getElementById("tapa").style.transform ="rotate(" + Inclinacion + "deg)";
+	}
+	
+</script>
+
+
+
+</html>

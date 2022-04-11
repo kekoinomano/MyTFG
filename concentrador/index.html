@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mi TFG</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <meta name="description" content="Sergio Álvarez Alcedo. Programador e Ingeniero de la energía.">
+  <meta name="author" content="Sergio Alvarez" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" media="screen" href="../css/style.css">
+  <link rel="shortcut icon" href="../img/portada2.png" />
+</head>
+<body>
+	<div id="menu"></div>
+	<div class="inicio"><div class="tituloinicio">Concentrador</div></div>
+
+	<div class="contenedor-checkboxes">
+		<label class="container">Espejo secundario
+	  		<input type="checkbox"id="checksecundario" class="checksecundario">
+	  				<span class="checkmark"></span>
+		</label>
+		<label class="lalente container" id="lalente" style="display: none;">Lente
+	  		<input type="checkbox"id="checklente" class="checklente">
+	  				<span class="checkmark"></span>
+		</label>
+		<label class="lalente container" id="tublen" style="display: none;">Tuberia
+	  		<input type="checkbox"id="checktub" class="checktub">
+	  				<span class="checkmark"></span>
+		</label>
+	</div>
+	<div class="contenedor-rangos">
+	<div class="rangos" style="display: block; margin-top: 0;">
+  <p>Radio curvatura primario: </p><span id="elradio"> 6</span>
+  <input type="range" step="0.1" min="4" max="8" value="6" id="r1" class="slider horaslider">
+</div>
+<div class="rangos" id="dsolar">
+  <p>Diametro secundario: </p><span id="diametrosecundario"> 0.6</span>
+  <input type="range" step="0.05" min="0.3" max="0.8" value="0.6" id="diametro" class="slider horaslider">
+</div>
+<div class="rangos" id="elegirsec">
+  <p>Radio curvatura secundario: </p><span id="curvsecundario"> 4</span>
+  <input type="range" step="0.1" min="3" max="5" value="4" id="r2" class="slider horaslider">
+</div>
+</div>
+	<div class="puntodepartida">
+<div class="concentrador" id="curvprinc">
+	<div class="semi">
+		<div class="trapezoid" id="luzprinc">
+			<div style="width: 0px;top:0;height: 0px;left:50%;position: absolute;">
+				<div class="secundario" id="espejosec">
+					<div class="sombra" id="sombra"></div>
+					<div class="trapezoid2" id="reflejo2"></div>
+						<div class="trapezoid3" id="reflejo2-1">
+						<div class="lente"id="len">
+							<div class="tuberia" id="tub"></div>
+						</div>
+					</div>
+					<div class="ocultar" id="ocultar"></div>
+					<div class="e2" id="e2"></div>
+					<div class="cajaoculta"></div>
+				</div>
+		</div>
+			
+		</div>
+		
+	</div>
+	</div>
+</div>
+<div id="footer"></div>
+</body>
+<script type="text/javascript">
+	$("#footer").load("../footer.html");
+	$("#menu").load("../menu.html");
+	var r1 = document.getElementById("r1");
+	var r2 = document.getElementById("r2");
+	var d = document.getElementById("diametro");
+	var checksecundario	= document.getElementById("checksecundario");
+	r1.oninput = function() {
+		var percentr1=(this.value-6);
+
+		document.getElementById("curvprinc").style.height =(370-percentr1*15) + "px";
+  		document.getElementById("luzprinc").style.borderBottom =(200+percentr1*100) + "px solid #fffe96";
+  		document.getElementById("elradio").innerHTML=this.value;
+
+  		var h=200+percentr1*100;
+		var rrr=200;
+		var hsec=((d.value*100/2)*h)/rrr;
+		document.getElementById("espejosec").style.top =hsec + "px";
+
+		document.getElementById("ocultar").style.borderBottom =hsec + "px solid white";
+		document.getElementById("ocultar").style.borderLeft =(d.value*100)/2 + "px solid transparent";
+		document.getElementById("ocultar").style.borderRight =(d.value*100)/2 + "px solid transparent";
+	}
+	d.oninput = function() {
+		var percentr1=(r1.value-6);
+		var percentr2=(this.value*100)*(0.25+(r2.value-3)*0.25);
+  		document.getElementById("diametrosecundario").innerHTML=this.value;
+
+  		var h=200+percentr1*100;
+		var rrr=200;
+		var hsec=(this.value/2*h*100)/rrr;
+		var hreflejo=150+(r2.value-3)*100;
+		var pos_tub=8*hreflejo/((this.value*100)/2);
+
+		document.getElementById("espejosec").style.top =hsec + "px";
+		document.getElementById("espejosec").style.width =this.value*100 + "px";
+		document.getElementById("espejosec").style.marginLeft =(-this.value/2*100) + "px";
+		document.getElementById("sombra").style.width =this.value*100 + "px";
+		document.getElementById("e2").style.width =this.value*100 + "px";
+		document.getElementById("e2").style.height =percentr2 + "px";
+		document.getElementById("e2").style.bottom =percentr2/2 + "px";
+
+		document.getElementById("ocultar").style.borderBottom =hsec + "px solid white";
+		document.getElementById("ocultar").style.borderLeft =(this.value*100)/2 + "px solid transparent";
+		document.getElementById("ocultar").style.borderRight =(this.value*100)/2 + "px solid transparent";
+		document.getElementById("reflejo2").style.borderLeft =(this.value*100)/2 + "px solid transparent";
+		document.getElementById("reflejo2").style.borderRight =(this.value*100)/2 + "px solid transparent";
+		document.getElementById("len").style.top =pos_tub + "px";
+		document.getElementById("reflejo2-1").style.borderBottom =pos_tub + "px solid yellow";
+		document.getElementById("reflejo2-1").style.left =(this.value*100)/2-8 + "px";
+
+	}
+	r2.oninput = function() {
+		document.getElementById("curvsecundario").innerHTML=this.value;
+		var percentr2=(d.value*100)*(0.25+(this.value-3)*0.25);
+		var hreflejo=150+(this.value-3)*100;
+		var pos_tub=8*hreflejo/((d.value*100)/2);
+		document.getElementById("e2").style.height =percentr2 + "px";
+		document.getElementById("e2").style.bottom =percentr2/2 + "px";
+		document.getElementById("reflejo2").style.borderLeft =(d.value*100)/2 + "px solid transparent";
+		document.getElementById("reflejo2").style.borderRight =(d.value*100)/2 + "px solid transparent";
+		document.getElementById("reflejo2").style.borderTop =hreflejo + "px solid yellow";
+		document.getElementById("reflejo2-1").style.top =hreflejo + "px";
+		document.getElementById("len").style.top =pos_tub + "px";
+		document.getElementById("reflejo2-1").style.borderBottom =pos_tub + "px solid yellow";
+
+	}
+	$(".checksecundario").on("change", function(){
+   if($(this).prop('checked')){
+	document.getElementById("espejosec").style.display ="block";
+	document.getElementById("dsolar").style.display ="block";
+	document.getElementById("elegirsec").style.display ="block";
+	document.getElementById("lalente").style.display ="block";
+   }else{
+    document.getElementById("espejosec").style.display ="none";
+	document.getElementById("dsolar").style.display ="none";
+	document.getElementById("elegirsec").style.display ="none";
+	document.getElementById("lalente").style.display ="none";
+	$("#checklente").prop("checked", false);
+    document.getElementById("tub").style.display ="none";
+	document.getElementById("len").style.display ="none";
+	}});
+	$(".checklente").on("change", function(){
+   if($(this).prop('checked')){
+   	document.getElementById("tublen").style.display ="block";
+	document.getElementById("tub").style.display ="block";
+	document.getElementById("len").style.display ="block";
+   }else{
+   	$("#checktub").prop("checked", false);
+    document.getElementById("tub").style.display ="none";
+	document.getElementById("len").style.display ="none";
+	document.getElementById("tub").style.border ="none";
+    document.getElementById("tub").style.height ="200px";
+	}});
+	$(".checktub").on("change", function(){
+   if($(this).prop('checked')){
+
+	document.getElementById("tub").style.borderLeft ="2px solid black";
+	document.getElementById("tub").style.borderRight ="2px solid black";
+	document.getElementById("tub").style.borderBottom ="2px solid black";
+	document.getElementById("tub").style.height ="300px";
+   }else{
+    document.getElementById("tub").style.border ="none";
+    document.getElementById("tub").style.height ="200px";
+	}});
+
+
+	function cambiarcurvaturasec(){
+		a=(document.getElementById("diametro").value*100)/2;
+		h=a/5;
+		r=((a*a)+(h*h))/(2*h);
+		centro=r-h;
+	}
+</script>
+
+
+
+</html>

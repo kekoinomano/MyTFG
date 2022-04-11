@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mi TFG</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <meta name="description" content="Sergio Álvarez Alcedo. Programador e Ingeniero de la energía.">
+  <meta name="author" content="Sergio Alvarez" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" media="screen" href="css/style.css">
+  <link rel="shortcut icon" href="img/image3.png" />
+</head>
+<body>
+<div id="menu"></div>
+<div class="contenedor-checkboxes" style="display: none;">
+	<div class="resultados">Resultados
+	  <p>Zonas a iluminar de 20m2 con 300 lx: </p> <p id="n_zonas">20 zonas</p>
+	  <p>Tiempo en calentar un litro de agua: </p> <p id="tiempo"> 10 min</p>
+	</div>
+</div>
+<div class="contenedor-rangos"  style="display: none;">
+	<div class="rangosblock">
+	  <p>Ángulo solar: </p><span id="angulo">119</span>
+	  <input type="range" min="0" max="180" value="119" id="horasolar" class="slider horaslider">
+	</div>
+	<div class="rangosblock">
+	  <p>Luz solar (lx): </p><span id="luz">60000</span>
+	  <input type="range" min="32000" step="1000" max="110000" value="60000" id="luzsolar" class="slider luzslider">
+	</div>
+	<div class="rangosblock">
+	  <p>Diámetro concentrador (m): </p><span id="diametroconcentrador">2.5</span>
+	  <input type="range" min="0.8" step="0.1" max="4" value="2.5" id="diametro" class="slider diametroslider">
+	</div>
+</div>
+<div class="gira" id="gira">
+		<img class="nube" id="nube" src="../img/nube.png" style="width: 287px;"><img src="../img/image3.png" id="concentradorimagen" style="padding-left: 1px; width: 287px;">
+</div>
+<div class="tubovertical">
+	<div class="bif2" id="bif2"></div>
+	
+</div>
+<div class="repartoluz">
+  		<input type="range" min="0" max="100" value="50" id="repartoluz" class="slider">
+</div>
+<div class="tubohorizontal">
+	<div class="izq izqopa"></div>
+	<div class="der deropa"></div>
+
+	<div class="tubovertical2 izqopa" style="left: -2px;"></div>
+	<div class="difusor" id="difusorluz"></div>
+		<div class="porcentajeiz"><div id="porcentajeiz">50</div>%</div>
+	<div class="tubovertical2 deropa" style="right: -2px;"></div>
+	<div class="difusor_der" id="difusorluz_der"></div>
+	<div class="porcentajeder"><div id="porcentajeder">50</div>%</div>
+
+</div>
+
+<div id="footer"></div>
+<script type="text/javascript">
+	$("#menu").load("menu.html");
+	$("#footer").load("footer.html");
+	var hora = document.getElementById("horasolar");
+	hora.oninput = function() {
+  		document.getElementById("gira").style.transform ="rotate(" + (this.value -90) + "deg)";
+  		document.getElementById("angulo").innerHTML=this.value;
+  		calculos();
+	}
+	var luz = document.getElementById("luzsolar");
+	luz.oninput = function() {
+		var porcentajeluz= (this.value-32000)/(110000-32000)*100;
+  		document.getElementById("nube").style.opacity =(100-porcentajeluz) +  "%";
+  		document.getElementById("luz").innerHTML=this.value;
+  		calculos();
+	}
+	var reparto = document.getElementById("repartoluz");
+	reparto.oninput = function() {
+		var elreparto= -5+(this.value/100)*10;
+  		document.getElementById("bif2").style.left= elreparto +"px";
+  		document.getElementById("porcentajeiz").innerHTML=this.value;
+  		document.getElementById("porcentajeder").innerHTML=(100-this.value);
+  		i=0;
+   		array= document.getElementsByClassName("izqopa");
+   		while (i<array.length){
+   			array[i].style.background="rgb(255 255 0 / "+(this.value)+"%)";
+   			i++;
+   		}
+   		document.getElementById("difusorluz").style.borderBottom= "100px solid rgb(255 255 0 / "+(this.value)+"%)";
+   		i=0;
+   		array2= document.getElementsByClassName("deropa");
+   		while (i<array2.length){
+   			array2[i].style.background="rgb(255 255 0 / "+(100-this.value)+"%)";
+   			i++;
+   		}
+  		document.getElementById("difusorluz_der").style.borderBottom= "100px solid rgb(255 255 0 / "+(100-this.value)+"%)";
+	}
+	var diametro = document.getElementById("diametro");
+	diametro.oninput = function() {
+		var nuevowidth = 200 + ((this.value-0.8)/(4-0.8))*(400-200);
+  		document.getElementById("diametroconcentrador").innerHTML=this.value;
+  		document.getElementById("concentradorimagen").style.width= nuevowidth + "px";
+  		document.getElementById("nube").style.width=nuevowidth + "px";
+  		calculos();
+	}
+
+
+	function calculos(){
+		var D=document.getElementById("diametroconcentrador").innerHTML;
+		var lux=document.getElementById("luz").innerHTML;
+		var izq = document.getElementById("porcentajeiz").innerHTML;
+		var der = document.getElementById("porcentajeder").innerHTML;
+
+		var area_util=Math.PI*Math.pow(D/2,2)-Math.PI*Math.pow(0.35/2,2);
+		var eta=0.7;
+		var lumenes_difusor=eta*lux*area_util;
+		var lux_normalizada=300;
+
+		var L_lf=0.8;	/*Factor de pérdida de la luz*/
+		var C_u=0.6;		/*Coeficiente de utilización*/
+		var Area_trabajo= 20; /*Area a iluminar*/
+
+		var Luminosidad_conseguida=lumenes_difusor*C_u*L_lf/Area_trabajo;
+
+		var Cantidad_zonas=Luminosidad_conseguida/lux_normalizada;
+
+		var P= 3345.13*der/100 ;	/*SOLTRACE*/
+
+		var Q=4180*(100-20);
+		var tiempo=Q/P;
+		var minutos=tiempo/60;
+		document.getElementById("tiempo").innerHTML=Math.round(minutos,2)+ " minutos";
+		document.getElementById("n_zonas").innerHTML=Math.round(Cantidad_zonas,0)*izq/100 + " zonas";
+	}
+
+
+	
+	
+</script>
+</body>
+</html>
